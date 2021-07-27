@@ -1,0 +1,1 @@
+This simple stopwatch was written during the study .NET Framewok and WPFs
