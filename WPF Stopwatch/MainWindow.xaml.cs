@@ -12,15 +12,16 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Media.Animation;
 
 namespace WPF_Stopwatch {
-    public partial class MainWindow : Window {
+    public partial class StopwatchWindow : Window {
 
         private Stopwatch _stopwatch;
-        private string _outputFormat = @"hh\:mm\:ss\.fff";
+        private string _outputFormat = @"h\:mm\:ss\.fff";
 
 
-        public MainWindow() {
+        public StopwatchWindow() {
             InitializeComponent();
 
             _stopwatch = new Stopwatch();
@@ -30,23 +31,76 @@ namespace WPF_Stopwatch {
         }
 
         private void BindButtonsReactions() {
-            StartButton.Click += OnStartButtonClicked;
-            StopButton.Click += OnStopButtonClicked;
-            RestartButton.Click += OnRestartButtonClicked;
+            MainButton.Click += OnStartButtonClicked;
         }
 
         private void OnStartButtonClicked(object sender, RoutedEventArgs e) {
             _stopwatch.Start();
+
+            MainButton.Content = "STOP";
+
+            MainButton.Click -= OnStartButtonClicked;
+            MainButton.Click += OnStopButtonClicked;
+            RestartButton.Click += OnRestartButtonClicked;
+            SmoothlyShowRestartButton();
         }
-        
+
         private void OnStopButtonClicked(object sender, RoutedEventArgs e) {
             _stopwatch.Stop();
+
+            MainButton.FontSize = 48;
+            MainButton.Content = "CONTINUE";
+
+            MainButton.Click -= OnStopButtonClicked;
+            MainButton.Click += OnContinueButtonClicked;
+        }
+
+        private void OnContinueButtonClicked(object sender, RoutedEventArgs e) {
+            _stopwatch.Start();
+
+            MainButton.FontSize = 54;
+            MainButton.Content = "STOP";
+
+            MainButton.Click -= OnContinueButtonClicked;
+            MainButton.Click += OnStopButtonClicked;
         }
 
         private void OnRestartButtonClicked(object sender, RoutedEventArgs e) {
             _stopwatch.Restart();
+
+            MainButton.FontSize = 54;
+            MainButton.Content = "START";
+
+            MainButton.Click -= OnStopButtonClicked;
+            MainButton.Click -= OnContinueButtonClicked;
+            MainButton.Click += OnStartButtonClicked;
+            RestartButton.Click -= OnRestartButtonClicked;
+            SmoothlyHideRestartButton();
         }
 
+        private void SmoothlyShowRestartButton() {
+
+            DoubleAnimation opacityAnimation = new DoubleAnimation();
+            opacityAnimation.From = 0;
+            opacityAnimation.To = 1;
+            opacityAnimation.Duration = TimeSpan.FromSeconds(0.5);
+
+            RestartButton.BeginAnimation(OpacityProperty, opacityAnimation);
+        }
+
+        private void SmoothlyHideRestartButton() {
+
+            DoubleAnimation opacityAnimation = new DoubleAnimation();
+            opacityAnimation.From = 1;
+            opacityAnimation.To = 0;
+            opacityAnimation.Duration = TimeSpan.FromSeconds(0.5);
+
+            RestartButton.BeginAnimation(OpacityProperty, opacityAnimation);
+        }
+
+        private void WindowOpacityAnimationCompleted(object sender, EventArgs e) {
+            Application.Current.Shutdown();
+        }
 
         private void LaunchUpdateTimer() {
             System.Windows.Threading.DispatcherTimer updateTimer = new System.Windows.Threading.DispatcherTimer();

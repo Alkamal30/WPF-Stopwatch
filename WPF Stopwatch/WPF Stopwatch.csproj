@@ -63,6 +63,12 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="ButtonStateMachine\ButtonStateMachine.cs" />
+    <Compile Include="ButtonStateMachine\RestartButtonState.cs" />
+    <Compile Include="ButtonStateMachine\ContinueButtonState.cs" />
+    <Compile Include="ButtonStateMachine\StopButtonState.cs" />
+    <Compile Include="ButtonStateMachine\StartButtonState.cs" />
+    <Compile Include="ButtonStateMachine\IButtonState.cs" />
     <Compile Include="Stopwatch.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
@@ -94,6 +100,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\ArrowRestartButton.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
